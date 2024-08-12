@@ -1,0 +1,38 @@
+/* Aqui puedes agregar tu estilo para que se vea más bonito tu página :)*/
+
+/* A modo resumen:
+
+#identificador_1 {
+}
+
+.clase_1{
+}
+
+etiqueta_1{
+}
+
+*/
+
+
+.orange{
+    color:rgb(217, 150, 26);
+}
+
+#blue{
+    color: blue;
+}
+
+p{
+    color: green;
+    font-size: 40px;
+    margin-left: 20px;
+}
+
+body{
+    margin-left: 40px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#imagen{
+    width: 200px;
+}
