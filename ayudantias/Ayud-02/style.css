@@ -1,0 +1,9 @@
+#titulo {
+    border: 5px solid black;
+    color: orange;
+}
+
+.subtitulo {
+    color: yellow;
+    font-size: 70px;
+}
