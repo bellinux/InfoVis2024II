@@ -1,0 +1,54 @@
+.boton {
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-width: 7px;
+    border-style: solid;
+    width: 200px;
+}
+
+h1 {
+    text-align: left;
+    margin-left: 50px;
+}
+
+body {
+    display: grid;
+    text-align: center;
+    justify-content: center;
+    margin-top: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-family: monospace;
+}
+
+.divisor {
+    border: black;
+    border-radius: 20px;
+    background-color: #A2A2A2;
+    opacity: 0.3;
+    width: 700px;
+}
+
+p {
+    font-size: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+#circulo {
+    width: 100px;
+    height: 100px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    margin-left: 300px;
+    margin-bottom: 20px;
+}
+
+input {
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
