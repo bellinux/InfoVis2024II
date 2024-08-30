@@ -1,0 +1,45 @@
+/* Light mode por defecto*/
+
+#pochita {
+    border: 5px solid red;
+    background-color: cyan;
+}
+
+.pelaje-pochita{
+    fill: orange;
+}
+
+
+.ojos-pochita{
+    fill: white;
+    stroke: black;
+    stroke-width: 5px;
+}
+
+.pupila-pochita{
+    fill: black;
+}
+
+/* AGREGAR MAS ESTILOS*/
+
+/* Dark mode */
+.dark-mode #pochita {
+    border: 5px solid cyan;
+    background-color: red;
+}
+
+
+.dark-mode .pelaje-pochita {
+    fill: blue;
+}
+
+.dark-mode .ojos-pochita {
+    fill: black;
+    stroke: white;
+}
+
+.dark-mode .pupila-pochita {
+    fill: white;
+}
+
+/* AGREGAR MAS ESTILOS*/
