@@ -1,0 +1,102 @@
+/* Light mode por defecto*/
+
+#pochita {
+    border: 5px solid red;
+    background-color: cyan;
+}
+
+.pelaje-pochita{
+    fill: orange;
+}
+
+.colmillos-pochita{
+    fill: white;
+    stroke: black;
+    stroke-width: 5px;
+}
+
+.boca-pochita{
+    fill: red;
+    stroke: black;
+    stroke-width: 5px;
+}
+.sombra-boca-pochita{
+    fill: black;
+}
+
+.ojos-pochita{
+    fill: white;
+    stroke: black;
+    stroke-width: 5px;
+}
+
+.pupila-pochita{
+    fill: black;
+}
+
+.manilla{
+    fill: black;
+}
+
+.punta-sierra{
+    fill: grey;
+}
+.dientes-sierra{
+    fill: #6E6E6E;
+}
+.cuerpo-sierra{
+    fill: grey;
+    stroke: #6E6E6E;
+    stroke-width: 10px;
+}
+
+/* Dark mode */
+.dark-mode #pochita {
+    border: 5px solid cyan;
+    background-color: red;
+}
+
+
+.dark-mode .pelaje-pochita {
+    fill: blue;
+}
+
+.dark-mode .colmillos-pochita {
+    fill: black;
+    stroke: white;
+}
+
+.dark-mode .boca-pochita {
+    fill: green;
+    stroke: white;
+}
+
+.dark-mode .sombra-boca-pochita {
+    fill: white;
+}
+
+.dark-mode .ojos-pochita {
+    fill: black;
+    stroke: white;
+}
+
+.dark-mode .pupila-pochita {
+    fill: white;
+}
+
+.dark-mode .manilla {
+    fill: white;
+}
+
+.dark-mode .punta-sierra {
+    fill: #888;
+}
+
+.dark-mode .dientes-sierra {
+    fill: #444;
+}
+
+.dark-mode .cuerpo-sierra {
+    fill: #888;
+    stroke: #444;
+}
