@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mapping</title>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            margin: 20px;
+            padding: 0;
+            border: 0;
+        }
+
+        #graph rect {
+            fill: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Número de habitantes por estado</h1>
+<svg id="graph" width="1200" height="600"></svg>
+
+<script>
+    var datos = [
+        { estado: "Chile", habitantes: 15412210 },
+        { estado: "France", habitantes: 45412210 },
+        { estado: "Italy", habitantes: 65412210 },
+        { estado: "Germany", habitantes: 55412210 },
+        { estado: "Finland", habitantes: 14412210 },
+        { estado: "Norway", habitantes: 18412210 },
+        { estado: "Greece", habitantes: 14912210 },
+        { estado: "ABC", habitantes: 54540066 },
+    ];
+
+    var graph = document.getElementById('graph');
+    var scaleFactor = 70000;
+
+    datos.forEach(function(element, i) {
+		// La posición horizontal (x) está fijada en 140
+		// La posición vertical (y) se calcula como 'i * 24' para colocar cada rectángulo en una fila diferente
+		// El ancho del rectángulo se calcula como 'element.habitantes / scaleFactor' para ajustar su tamaño según el número de habitantes
+		// La altura del rectángulo está fijada en 20
+		graph.innerHTML += '<rect x="140" y="' + (i * 24) + '" width="' + (element.habitantes / scaleFactor) + '" height="20"></rect>';
+		
+		// 'text-anchor="end"' alinea el texto al final del punto especificado en 'x'
+		// El color del texto es negro ('#000')
+		// El tamaño de la fuente es 24
+		// La fuente utilizada es Verdana
+		// La posición horizontal (x) está fijada en 120, justo antes de la posición de los rectángulos
+		// La posición vertical (y) se calcula como 'i * 24 + 18' para alinear el texto con rectángulo correspondiente
+		// El texto es el nombre del estado
+		graph.innerHTML += '<text text-anchor="end" fill="#000" font-size="24" font-family="Verdana" x="120" y="' + (i * 24 + 18) + '">' + element.estado + '</text>';
+	});
+
+</script>
+
+</body>
+</html>

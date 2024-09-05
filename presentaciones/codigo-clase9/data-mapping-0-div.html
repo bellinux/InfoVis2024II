@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Definimos el conjunto de caracteres como UTF-8 para soportar una amplia gama de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Configuramos la vista para dispositivos móviles -->
+    <title>Data Mapping</title>
+    <!-- Título de la página -->
+    <style>
+        /* Estilos básicos para el cuerpo del documento */
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+
+        /* Estilos para los contenedores de las barras que representan los datos */
+        #graph div {
+            width: 200px; /* Ancho inicial de las barras */
+            height: 20px; /* Altura fija de las barras */
+            background: #ccc; /* Color de fondo de las barras */
+            margin-top: 6px; /* Espacio superior entre barras */
+            padding: 3px; /* Relleno interno */
+            display: flex; /* Usamos flexbox para alinear contenido interno */
+            justify-content: space-between; /* Distribuye el contenido a los extremos */
+            align-items: center; /* Centra verticalmente el contenido */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Número de habitantes por estado</h1>
+<!-- Encabezado principal de la página -->
+
+<div id="graph"></div>
+<!-- Contenedor que alojará las barras generadas dinámicamente -->
+
+<script>
+    // Array de objetos que contiene los datos de los estados y sus habitantes
+    const datos = [
+        { estado: "Chile", habitantes: 15412210 },
+        { estado: "France", habitantes: 45412210 },
+        { estado: "Italy", habitantes: 65412210 },
+        { estado: "Germany", habitantes: 55412210 },
+        { estado: "Finland", habitantes: 14412210 },
+        { estado: "Norway", habitantes: 18412210 },
+    ];
+
+    // Seleccionamos el contenedor principal para las barras
+    const graph = document.getElementById('graph');
+
+	// Factor de escala para ajustar el ancho de las barras
+    const scaleFactor = 80000; 
+	
+    // Iteramos sobre cada elemento en el array de datos
+    datos.forEach(element => {
+		const bar = document.createElement('div'); // Crea un nuevo div para cada estado
+        bar.style.width = element.habitantes / scaleFactor + "px"; // Ajusta el ancho de la barra según el número de habitantes
+        bar.innerHTML = "<span>" + element.estado + "</span><span>" + element.habitantes + "</span>"; // Inserta el nombre del estado y el número de habitantes dentro de la barra
+        graph.appendChild(bar); // Añadimos la barra al contenedor principal
+    });
+</script>
+
+</body>
+</html>

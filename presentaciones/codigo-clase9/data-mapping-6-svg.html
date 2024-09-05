@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mapping</title>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            margin: 20px;
+            padding: 0;
+            border: 0;
+        }
+
+        #graph rect {
+            fill: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Número de habitantes por estado</h1>
+<svg id="graph" width="1200" height="600"></svg>
+
+<script>
+    var datos = [
+        { estado: "Chile", habitantes: 15412210 },
+        { estado: "France", habitantes: 45412210 },
+        { estado: "Italy", habitantes: 65412210 },
+        { estado: "Germany", habitantes: 55412210 },
+        { estado: "Finland", habitantes: 14412210 },
+        { estado: "Norway", habitantes: 18412210 },
+        { estado: "Greece", habitantes: 14912210 },
+        { estado: "ABC", habitantes: 54540066 },
+    ];
+
+    var graph = document.getElementById('graph');
+    var scaleFactor = 80000;
+
+    datos.forEach(function(element, i) {
+		// La altura del rectángulo se establece en 2 píxeles para que sea más sutil
+		// La posición vertical (y) se ajusta para colocar el rectángulo en la posición correcta
+		graph.innerHTML += '<rect x="140" y="' + (i * 24 + 10) + '" width="' + (element.habitantes / scaleFactor) + '" height="2"></rect>';
+		graph.innerHTML += '<text text-anchor="end" fill="#000" font-size="24" font-family="Verdana" x="120" y="' + (i * 24 + 18) + '">' + element.estado + '</text>';
+		graph.innerHTML += '<text text-anchor="start" fill="#000" font-size="18" font-family="Verdana" x="' + (element.habitantes / scaleFactor + 145) + '" y="' + (i * 24 + 17 ) + '">'+ (element.habitantes/1000000).toFixed(1) + 'M </text>';
+		
+		// Añadir un círculo al final del rectángulo para resaltar
+		// La posición horizontal (cx) se ajusta para que el círculo esté justo al final del rectángulo
+		// La posición vertical (cy) alinea el círculo verticalmente con el rectángulo
+		graph.innerHTML += '<circle cx="' + (element.habitantes / scaleFactor + 140) +'" cy="' + (i * 24 + 11) +'" r="4" fill="#999" />'
+	
+	});
+
+</script>
+
+</body>
+</html>
+	
