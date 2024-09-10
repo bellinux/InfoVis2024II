@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Por favor, contratar dos personas</title>
+  <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
+</head>
+<body>
+  <div style="width:1000px; height:400px" id='myDiv'></div>
+</body>
+
+
+<script>
+	/*
+	let month = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+	let processedNumber = [160, 184, 237, 148, 181, 150, 123, 156, 126, 104, 124, 140];
+	let receivedNumber = [160, 184, 241, 149, 180, 161, 132, 202, 160, 139, 149, 177];
+	*/
+	
+	/*
+	let datosColumn = {
+		month: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+		processed: [160, 184, 237, 148, 181, 150, 123, 156, 126, 104, 124, 140],
+		received: [160, 184, 241, 149, 180, 161, 132, 202, 160, 139, 149, 177],
+	}
+	*/
+	
+	let datos = [
+		{ month: "Ene", processed: 160, received: 160 },
+		{ month: "Feb", processed: 184, received: 184 },
+		{ month: "Mar", processed: 237, received: 241 },
+		{ month: "Abr", processed: 148, received: 149 },
+		{ month: "May", processed: 181, received: 180 },
+		{ month: "Jun", processed: 150, received: 161 },
+		{ month: "Jul", processed: 123, received: 132 },
+		{ month: "Ago", processed: 156, received: 202 },
+		{ month: "Sep", processed: 126, received: 160 },
+		{ month: "Oct", processed: 104, received: 139 },
+		{ month: "Nov", processed: 124, received: 149 },
+		{ month: "Dic", processed: 140, received: 177 }
+	];
+	
+	let month = datos.map(item => item.month);
+	let processedNumber = datos.map(item => item.processed);
+	let receivedNumber = datos.map(item => item.received);
+	
+	// Datos de tickets procesados
+	let processed = {
+		x: month,
+		y: processedNumber,
+		type: 'bar',
+		name: 'Processed',
+	};
+
+	// Datos de tickets recibidos
+	let received = {
+		x: month,
+		y: receivedNumber,
+		type: 'bar',
+		name: 'Received',
+	};
+
+	// Configuración del diseño del gráfico
+	let layout = {
+		title: 'Processed ticket over time',
+	};
+
+	
+	// Genera el gráfico, ejemplo en https://plotly.com/javascript/bar-charts/
+	Plotly.newPlot('myDiv', [processed, received], layout);
+</script>
+</html>
