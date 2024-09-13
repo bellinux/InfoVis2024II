@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mapping</title>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            margin: 20px;
+            padding: 0;
+            border: 0;
+        }
+
+        #graph rect {
+            fill: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Número de habitantes por estado</h1>
+<!-- Encabezado principal de la página -->
+
+<svg id="graph" width="1200" height="600"></svg>
+<!-- Contenedor SVG donde se dibujarán los rectángulos para representar los datos -->
+
+<script>
+    // Array de objetos que contiene los datos de los estados y sus habitantes
+    var datos = [
+        { estado: "Chile", habitantes: 15412210 },
+        { estado: "France", habitantes: 45412210 },
+        { estado: "Italy", habitantes: 65412210 },
+        { estado: "Germany", habitantes: 55412210 },
+        { estado: "Finland", habitantes: 14412210 },
+        { estado: "Norway", habitantes: 18412210 },
+        { estado: "Greece", habitantes: 14912210 },
+        { estado: "ABC", habitantes: 54540066 },
+    ];
+
+    // Selecciona el contenedor SVG donde se dibujarán los rectángulos
+    var graph = document.getElementById('graph');
+    // Factor de escala para ajustar el ancho de los rectángulos basado en el número de habitantes
+    var scaleFactor = 80000;
+
+    // Itera sobre cada elemento en el array de datos
+    datos.forEach(function(element, i) {
+        // Añade un rectángulo para cada estado al contenedor SVG
+        // La posición vertical (y) se basa en el índice para que cada rectángulo esté en una fila separada
+        // El ancho del rectángulo se basa en el número de habitantes, ajustado por el factor de escala
+        graph.innerHTML += '<rect x="0" y="' + (i * 24) + '" width="' + (element.habitantes / scaleFactor) + '" height="20" ></rect>';
+    });
+	
+	
+	//Alternativa para crear rect 
+	/*	
+	var svgns = "http://www.w3.org/2000/svg";
+	var rect = document.createElementNS(svgns, 'rect');
+	rect.setAttribute('x', '0');
+	rect.setAttribute('y', (i * 24));
+	rect.setAttribute('height', '20');
+	rect.setAttribute('width', (element.habitantes / scaleFactor));
+	graph.appendChild(rect);
+	*/
+
+</script>
+
+
+
+</body>
+</html>

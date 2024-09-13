@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Terremotos</title>
+	<script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
+	<script charset="UTF-8" src="data.js"></script>
+</head>
+
+<body>
+	<div id='title'>
+		<h1>Terremotos de Chile desde el 2000</h1>
+	</div>
+	<div id='details'>
+		<span id="nombre"></span>
+		<span id="regiones"></span>
+		<span id="muertos"></span>
+		<span id="magnitud"></span>
+		<span id="tzunami"><img src="tzunami.png" /></span>
+	</div>
+	<div id='myMap'></div>
+	<!-- El contexto inicial se diseñó manualmente con Inkscape y está superpuesto -->
+	<!-- En la clase precedente, en cambio, se usaron anotaciones (annotations) y formas (shapes) en Plotly.js -->
+	<img id="context" src="map.svg" /> 
+</body>
+
+<style>
+	* {
+		font-family: sans-serif;
+	}
+
+	#context {
+		position: absolute;
+		/* pointer-events: none; hace que el contexto (imagen SVG) sea "transparente" a los eventos del usuario,
+		permitiendo que los elementos interactivos debajo (el mapa de Chile) sigan respondiendo a los eventos.
+		Sin embargo, la imagen sigue siendo visible */
+		pointer-events: none;
+		top: 85px;
+		left: 83px;
+		transition: 500ms ease all;
+	}
+
+	#myMap {
+		position: absolute;
+		width: 200px;
+		height: 800px;
+		border: 0px solid #333;
+		left: 30px;
+		top: 0px;
+	}
+
+	#details {
+		position: absolute;
+		left: 270px;
+		top: 145px;
+		width: 500px;
+		height: 500px;
+		transition: 500ms ease all;
+		opacity: 0;
+	}
+
+	#title {
+		position: absolute;
+		left: 265px;
+		top: 20px;
+	}
+
+	h1 {
+		font-size: 36px;
+		font-weight: 200;
+		color: #777;
+	}
+
+	span {
+		display: block;
+		margin-top: 6px;
+	}
+
+	#nombre {
+		font-size: 18px;
+		font-weight: 800;
+		color: #333;
+	}
+
+	#regiones {
+		font-size: 16px;
+		font-weight: 200;
+		font-style: italic;
+	}
+
+	#muertos:after {
+		content: ' muertos';
+		font-size: 16px;
+		font-weight: 500;
+		text-transform: uppercase;
+		color: #444;
+	}
+
+	#tzunami img {
+		height: 120px;
+	}
+
+	#tzunami {
+		position: absolute;
+		top: 224px;
+		margin-left: 121px;
+	}
+
+	#muertos {
+		transition: 500ms ease all;
+		font-size: 60px;
+		margin-top: 59px;
+		font-weight: 700;
+		color: #970b0b;
+	}
+
+	#magnitud {
+		width: 100px;
+		transition: 500ms all ease;
+		height: 100px;
+		border: 1px solid;
+		text-align: center;
+		line-height: 100px;
+		border-radius: 100px;
+		margin-top: 43px;
+		font-size: 20px;
+		background: #881d0f;
+		color: #fff;
+	}
+
+	#magnitud:after {
+		content: "MW";
+		font-size: 12px;
+	}
+</style>
+
+
+<script>
+
+	// Efecto terremoto: https://esqsoft.com/javascript_examples/earthquake
+	// El código ha sido minimizado (utilizando https://minify-js.com/) y se ha modificado ligeramente para que la animación tenga una duración de 20 segundos */
+    function earthQuake(e){function t(e){return`${e}px`}function a(e,a,n){e.style.left=t(a),e.style.top=t(n)}e.el.getAttribute("data-quake")||(e.el.setAttribute("data-quake",!0),function e(t){switch(t.animationOption){case"rotate":++t.index>8&&(t.index=1);break;case"shaky":t.index=parseInt(8*Math.random());break;case"horizontal":t.index+=4,t.index>8&&(t.index=0);break;case"diagonal":t.index+=5,t.index>8&&(t.index=1);break;case"faster":t.index+=2,t.index>8&&(t.index=1);break;default:confirm("hmmm... default (error)")||(t.ttl=0)}let n=t.el,i=t.x,o=t.y,r=t.delta;switch(t.index){case 1:a(n,i-r,o-r);break;case 2:a(n,i,o-r);break;case 3:a(n,i+r,o-r);break;case 4:a(n,i+r,o);break;case 5:a(n,i+r,o+r);break;case 6:a(n,i,o+r);break;case 7:a(n,i-r,o+r);break;case 8:a(n,i-r,o)}--t.ttl>0?setTimeout((()=>e(t)),t.speedMilliseconds):(t.el.removeAttribute("data-quake"),t=null)}({el:e.el,index:0,ttl:360,delta:1,speedMilliseconds:50,animationOption:e.animationOption||parseInt(2*Math.random()),...function(e){let t=e.offsetLeft,a=e.offsetTop,n=e.offsetParent;for(;null!=n&&"relative"!==getComputedStyle(n).position;)t+=n.offsetLeft,a+=n.offsetTop,n=n.offsetParent;return{x:t,y:a}}(e.el)}))}
+  
+
+
+	const myPlot = document.getElementById('myMap');
+
+	const lon = terremotos.map(item => item.Lon);
+	const lat = terremotos.map(item => item.Lat);
+	// Se modifican las magnitudes para resaltar más las diferencias entre los terremotos. Es una decisión de diseño.
+	const magnitud = terremotos.map(item => (item.Magnitud * 5 - 28)); 
+
+	const data = [
+		{ //Trampa para visualizar solo Chile :)
+			type: 'choropleth', locations: ['CHL'],
+			z: [0], // Valor de color para Chile utilizando la escala de colores definida a continuación. El valor puede ser 0 o 1, ya que la escala de colores solo contiene un color.
+			colorscale: [[0, '#ddd'], [1, '#ddd']], // Parece que se requiere una escala de colores, pero solo necesitamos un color.
+			showscale: false,
+			hoverinfo: 'skip',
+		},
+		{ //Visualiza los puntos en la mapa de Chile
+			type: 'scattergeo',
+			mode: 'markers',
+			lon: lon, lat: lat,
+			hoverinfo: 'none',
+			marker: { 
+				color: magnitud, size: magnitud, // El tamaño y el color dependen de la magnitud. Hay dos señales visuales redundantes para representar la magnitud.
+				colorscale: [[0, '#fff'], [1, '#000']],
+				line: { color: 'black' }
+			},
+		}
+	];
+
+	const layout = {
+		geo: {
+			scope: 'south america',
+			showland: false,
+			countrywidth: 0,
+			lonaxis: { range: [-64, -76] },
+			lataxis: { range: [-18, -59] }
+		},
+		width: 200,
+		height: 800,
+		margin: { l: 0, r: 0, b: 0, t: 0, pad: 0 },
+		dragmode: false
+	};
+
+	Plotly.newPlot(myPlot, data, layout, { scrollZoom: false, displayModeBar: false });
+
+
+
+	// Evento que se activa cuando el mouse está sobre un círculo que indica un terremoto
+	myPlot.on('plotly_hover', function(data) {
+		// Extrae la información del terremoto en la posición del mouse desde el arreglo de terremotos
+		const terremoto = terremotos[data.points[0].pointIndex];
+		
+		// Muestra el nombre del terremoto y las zonas afectadas
+		document.getElementById("nombre").innerHTML = terremoto.Nombre;
+		document.getElementById("regiones").innerHTML = terremoto.Zonas;
+
+		// Si hubo tsunami, muestra la imagen correspondiente; si no, ocúltala
+		if (terremoto.Tzunami) {
+			document.getElementById("tzunami").style.display = "block";
+		} else {
+			document.getElementById("tzunami").style.display = "none";
+		}
+
+		// Si el número de muertos es cero, cambia el color del texto
+		const muertosElement = document.getElementById("muertos");
+		if (terremoto.Muertos == 0) {
+			muertosElement.style.color = "#0f53ee";  // Cambia a un color específico
+		} else {
+			muertosElement.style.color = "";  // Restablece el color por defecto
+		}
+		
+		// Muestra el número de muertos
+		muertosElement.innerHTML = terremoto.Muertos;
+
+		let magnitud = terremoto.Magnitud;
+		const magnitudElement = document.getElementById("magnitud");
+		
+		// Muestra el valor de la magnitud del terremoto
+		magnitudElement.innerHTML = magnitud;
+		magnitud *= 10;
+
+		// Ajusta el tamaño del div que muestra la magnitud según el valor de esta
+		magnitudElement.style.width = magnitud + "px";
+		magnitudElement.style.height = magnitud + "px";
+		magnitudElement.style.lineHeight = magnitud + "px";
+		
+		// Ajusta también el tamaño del ícono de tsunami según la magnitud
+		document.querySelector("#tzunami img").style.height = magnitud + "px";
+
+		// Muestra los detalles del terremoto cuando el mouse está sobre el círculo
+		document.getElementById("details").style.opacity = 1;
+		// Elimina la visibilidad del contexto inicial
+		document.getElementById("context").style.opacity = 0;
+	});
+
+	// Evento que se activa cuando el mouse sale del círculo que indica el terremoto
+	myPlot.on('plotly_unhover', function(data) {
+		// Oculta los detalles del terremoto
+		document.getElementById("details").style.opacity = 0;
+		// Vuelve a mostrar el contexto inicial
+		document.getElementById("context").style.opacity = 1;
+	});
+
+	let timeout;
+	// Se definen los audios para 3 niveles de intensidad de terremoto
+	const highAudio = new Audio("high.mp3");
+	const mediumAudio = new Audio("medium.mp3");
+	const lowAudio = new Audio("low.mp3");
+
+	myPlot.on('plotly_click', function(data) {
+		// Activa el efecto de terremoto visual en el gráfico (usando https://esqsoft.com/javascript_examples/earthquake)
+		earthQuake({ el: myPlot, animationOption: "shaky" });
+		
+		// Extrae la magnitud del terremoto
+		const magnitudSound = terremotos[data.points[0].pointIndex].Magnitud;
+
+		// Ajusta el volumen de los audios en función de la magnitud del terremoto
+		// Se ha jugado con los parámetros para establecer niveles de volumen adecuados
+		const volumeHigh = Math.max(0, Math.min(1, magnitudSound - 7.9));
+		const volumeMedium = Math.max(0, Math.min(1, magnitudSound - 6.9));
+		const volumeLow = Math.max(0, Math.min(1, magnitudSound - 5.9));
+
+		// Asigna los volúmenes a los audios correspondientes
+		highAudio.volume = volumeHigh;
+		mediumAudio.volume = volumeMedium;
+		lowAudio.volume = volumeLow;
+
+		// Reinicia los audios si ya fueron ejecutados previamente
+		highAudio.currentTime = 0;
+		mediumAudio.currentTime = 0;
+		lowAudio.currentTime = 0;
+		
+		// Reproduce los audios
+		highAudio.play();
+		mediumAudio.play();
+		lowAudio.play();
+
+		// Detiene los audios después de 20 segundos
+		clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			highAudio.pause();
+			mediumAudio.pause();
+			lowAudio.pause();
+		}, 20000);
+	});
+
+
+</script>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mapping</title>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            margin: 20px;
+            padding: 0;
+            border: 0;
+        }
+		
+		#additionalInfo{
+			font-size:40px;
+		}
+
+
+    </style>
+</head>
+<body>
+
+<button id="europeBtn" type="button">Europe</button>
+<button id="asiaBtn" type="button">Asia</button>
+<button id="americasBtn" type="button">Americas</button>
+
+<h1>Número de habitantes por estado</h1>
+<svg id="graph" width="1800" height="300"></svg>
+
+<div id="additionalInfo"></div>
+
+<script>
+	var europe = [
+		
+		{estado: "France", habitantes: 45412210, idioma: "Frances"},
+		{estado: "Italy", habitantes: 65412210, idioma: "Italiano"},
+		{estado: "Germany", habitantes: 55412210, idioma: "Aleman"},
+		{estado: "Finland", habitantes: 14412210, idioma: "Finlandes"},
+		{estado: "Norway", habitantes: 18412210, idioma: "Noruego"},
+		{estado: "Greece", habitantes: 14912210, idioma: "Griego"},
+	]
+
+
+	var asia = [
+		
+		{estado: "India", habitantes: 105412210, idioma: "Ingles"},
+		{estado: "China", habitantes: 115412210, idioma: "Chino"},
+		{estado: "Indonesia", habitantes: 25412210, idioma: "Ingles"},
+		{estado: "Iraq", habitantes: 5412210, idioma: "Arabe"},
+		{estado: "Rusia", habitantes: 114412210, idioma: "Ruso"},
+	]
+
+
+	var americas = [
+		
+		{estado: "Paraguay", habitantes: 14412210, idioma: "Espanol"},
+		{estado: "Chile", habitantes: 49412210, idioma: "Espanol"},
+		{estado: "Peru", habitantes: 54412210, idioma: "Espanol"},
+		{estado: "Argentina", habitantes: 65412210, idioma: "Espanol"},
+		{estado: "Uruguay", habitantes: 3412210, idioma: "Espanol"},
+		{estado: "Panama", habitantes: 1412210, idioma: "Espanol"},
+		{estado: "Brazil", habitantes: 110412210, idioma: "Portugues"},
+		{estado: "EEUU", habitantes: 124540066, idioma: "Ingles"},
+	]
+
+	var graph = document.getElementById('graph');
+	var scaleFactor = 80000;
+		
+	
+	
+	// Función para crear el gráfico, que se llama al evento click de los botones con datos diferentes
+	function createGraph(datos){
+		var max = 0;
+		var maxEstado = "";
+		// Remueve todo el contenido del gráfico
+		graph.innerHTML = '';
+		document.querySelector("#additionalInfo").innerHTML="";
+		datos.forEach(function(element, i) {
+			
+			graph.innerHTML += '<rect id="rect' + element.estado + '" fill="#ccc" x="140" y="' + (i * 24 + 10) + '" width="' + (element.habitantes / scaleFactor) + '" height="2"></rect>';
+			graph.innerHTML += '<text text-anchor="end" fill="#000" font-size="24" font-family="Verdana" x="120" y="' + (i * 24 + 18) + '">' + element.estado + '</text>';
+			graph.innerHTML += '<text text-anchor="start" fill="#000" font-size="18" font-family="Verdana" x="' + (element.habitantes / scaleFactor + 145) + '" y="' + (i * 24 + 17 ) + '">'+ (element.habitantes/1000000).toFixed(1) + 'M </text>';
+			graph.innerHTML += '<circle id="circle' + element.estado + '" fill="#ccc" cx="' + (element.habitantes / scaleFactor + 140) +'" cy="' + (i * 24 + 11) +'" r="4" fill="#999" />'
+
+			if (element.habitantes > max) {
+				max = element.habitantes;
+				maxEstado = element.estado;
+			}
+		
+		});
+		document.querySelector("#rect" + maxEstado).setAttribute("fill", "#337799");
+		document.querySelector("#circle" + maxEstado).setAttribute("fill", "#337799");
+		
+		// Agrega el evento onmouseenter en cada barra de cada estado
+		datos.forEach((element, i) => {
+			document.querySelector("#rect"+element.estado).onmouseenter = function(){
+				document.querySelector("#additionalInfo").innerHTML="En "+element.estado+" se habla "+element.idioma;
+			};
+			/*
+			document.querySelector("#rect"+element.estado).onmouseleave = function(){
+				document.querySelector("#additionalInfo").innerHTML="";
+			};
+			*/
+		});
+	}
+
+	// Configura los eventos de clic para los botones que cambian los datos del gráfico
+	document.querySelector("#europeBtn").onclick = function(){
+		createGraph(europe)
+	};
+
+	document.querySelector("#asiaBtn").onclick = function(){
+		createGraph(asia)
+	};
+
+	document.querySelector("#americasBtn").onclick = function(){
+		createGraph(americas)
+	};
+</script>
+
+</body>
+</html>
+	

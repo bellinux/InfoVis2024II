@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Por favor, contratar dos personas</title>
+  <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
+</head>
+<body>
+  <div id='myDiv'></div>
+</body>
+
+<style>
+    /* Ajusta la posición del texto en el gráfico de dispersión */
+    #myDiv > div > div > svg > g.cartesianlayer > g > g.overplot > g > g > g.trace.scatter:nth-child(1) > g.text {
+        transform: translateY(8px);
+    }
+    #myDiv > div > div > svg > g.cartesianlayer > g > g.overplot > g > g > g.trace.scatter:nth-child(2) > g.text {
+        transform: translateY(-5px);
+    }
+
+    /* Define la animación para los puntos en el gráfico */
+    @keyframes mymove {
+        50% {opacity: 0.4;}
+    }
+    #myDiv > div > div > svg > g.cartesianlayer > g > g.overplot > g > g > g.trace.scatter:nth-child(1) > g.points {
+        animation: mymove 2s infinite;
+    }
+    #myDiv > div > div > svg > g.cartesianlayer > g > g.overplot > g > g > g.trace.scatter:nth-child(2) > g.points {
+        animation: mymove 2s infinite;
+        animation-delay: 1000ms;
+    }
+</style>
+
+<script>
+	// Definición de datos
+	var month = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+	var processedNumber = [160, 184, 237, 148, 181, 150, 123, 156, 126, 104, 124, 140];
+	var receivedNumber = [160, 184, 241, 149, 180, 161, 132, 202, 160, 139, 149, 177];
+	var processedTxt = [, , , , , , , 156, 126, 104, 124, 140]; // Solo algunos meses con texto
+	var receivedTxt = [, , , , , , , 202, 160, 139, 149, 177];
+
+	// Tamaño de marcador para resaltar meses específicos (ago-dic)
+	var noSize = 0; //ene-jul no se dibujan puntos
+	var yesSize = 10; //ago-dic se dibujan puntos de 10 pixeles
+	var sizeMarker = [noSize, noSize, noSize, noSize, noSize, noSize, noSize, yesSize, yesSize, yesSize, yesSize, yesSize];
+
+	// Datos de tickets procesados
+	var processed = {
+		x: month,
+		y: processedNumber,
+		text: processedTxt,
+		textposition: 'bottom',
+		textfont: { color: "#226699", },
+		mode: 'lines+markers+text',
+		marker: { size: sizeMarker,	opacity: 1, line: { width: 0 } },
+		line: {	color: "#226699", width: 4 }
+	};
+
+	// Datos de tickets recibidos
+	var received = {
+		x: month,
+		y: receivedNumber,
+		text: receivedTxt,
+		textposition: 'top',
+		textfont: {	color: "#999", },
+		mode: 'lines+markers+text',
+		marker: { size: sizeMarker,	opacity: 1, line: { width: 0 } },
+		line: { color: "#999", width: 4	}
+	};
+
+	// Configuración del diseño del gráfico
+	var layout = {
+		showlegend: false,
+		height: 450,
+		width: 600,
+		xaxis: {
+			showline: true,	showgrid: false, showticklabels: true,
+			linecolor: 'rgb(82, 82, 82)', linewidth: 1,	autotick: false,
+			tickfont: {	family: 'Arial', size: 12, color: 'rgb(82, 82, 82)'	}
+		},
+		yaxis: {
+			showgrid: false, zeroline: true, showline: true,
+			linewidth: 1, showticklabels: true,	linecolor: 'rgb(82, 82, 82)',
+			range: [1, 300], ticks: 'outside', tickcolor: 'rgb(82, 82, 82)',
+			tickwidth: 1, ticklen: 5, tickfont: {	family: 'Arial', size: 12, color: 'rgb(82, 82, 82)'	}
+		},
+		margin: { autoexpand: false, l: 70, r: 100,	t: 130 },
+		shapes: [
+			// Línea vertical en 'Mayo'
+			{ type: 'line', x0: "May", y0: 0, x1: "May", y1: 250, line: { color: 'rgb(200, 200, 200)', width: 1	} }
+		],
+		annotations: [{
+				xref: 'paper', yref: 'paper', x: -0.07,	y: 1.49, xanchor: 'left', yanchor: 'top',
+				text: '<b>Por favor, apruebe la contratación de 2 personas</b>',
+				showarrow: false, font: { family: 'Arial', size: 22, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: -0.07,	y: 1.38, xanchor: 'left', yanchor: 'top',
+				text: 'para reemplazar a los que renunciaron en el último año',
+				showarrow: false, font: { family: 'Arial', size: 15, color: 'rgb(150,150,150)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: -0.07,	y: 1.24, xanchor: 'left', yanchor: 'top',
+				text: 'Volumen de tickets a lo largo del tiempo',
+				showarrow: false, font: { family: 'Arial', size: 16, color: 'rgb(150,150,150)' }
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.2, y: 1.05, xanchor: 'left', yanchor: 'top',
+				text: '<b>2 empleados renunciaron en mayo.</b> Casi logramos mantenernos al día con',
+				showarrow: false, font: { family: 'Arial', size: 12, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.2, y: 0.99, xanchor: 'left', yanchor: 'top',
+				text: 'el volumen de entradas en los dos meses siguientes, pero nos retrasamos ',
+				showarrow: false, font: {	family: 'Arial', size: 12, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.2, y: 0.936, xanchor: 'left', yanchor: 'top',
+				text: 'con el aumento en agosto y no hemos podido recuperarnos desde entonces.',
+				showarrow: false, font: { family: 'Arial', size: 12, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.96, y: 0.51,	xanchor: 'left', yanchor: 'top',
+				text: '<b>Procesados</b>', 
+				showarrow: false, font: { family: 'Arial', size: 14, color: '#226699' },				
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.96, y: 0.64, xanchor: 'left', yanchor: 'top',
+				text: '<b>Recibidos</b>',
+				showarrow: false, font: { family: 'Arial', size: 14, color: '#999' },
+			}, {
+				xref: 'paper', yref: 'paper', x: -0.12, y: 1.03, textangle: -90, xanchor: 'left', yanchor: 'top',
+				text: 'Número de tickets',
+				showarrow: false, font: {	family: 'Arial', size: 13, color: 'rgb(100,100,100)' },
+			}
+		]
+	};
+
+	// Genera el gráfico
+	Plotly.newPlot('myDiv', [processed, received], layout, {
+		staticPlot: true
+	});
+</script>
+</html>

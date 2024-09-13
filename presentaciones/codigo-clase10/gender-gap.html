@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diferencia salarial en EE.UU.</title>
+    <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
+    <style>
+        /* Estilos para el cuadro de detalles */
+        #details {
+            position: absolute;
+            left: 608px;
+            top: 210px;
+            width: 221px;
+            height: 300px;
+            display: none;
+        }
+        #details span {
+            display: block;
+            font-family: sans-serif;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        /* Etiquetas antes del contenido de los detalles */
+        #state:before, #woman:before, #man:before, #diff:before {
+            display: block;
+            text-transform: uppercase;
+            color: #555;
+            font-weight: 500;
+            font-style: italic;
+            font-size: 15px;
+        }
+
+        /* Contenido de cada span */
+        #state:before { content: "Estado"; }
+        #woman:before { content: "Mujer"; }
+        #man:before { content: "Hombre"; }
+        #diff:before { content: "Diferencia"; }
+    </style>
+</head>
+<body>
+    <!-- Div principal para el gráfico -->
+    <div id="myDiv"></div>
+    <!-- Div de detalles que se mostrará al hacer hover -->
+    <div id="details">
+        <span id="state"></span>
+        <span id="woman"></span>
+        <span id="man"></span>
+        <span id="diff"></span>
+    </div>
+
+    <script>
+        // Datos de los estados, salarios masculinos y femeninos
+        const states = ["Wyoming","New Hampshire","Utah","Washington","District of Columbia","Louisiana","Montana","New Jersey","Michigan","Alabama","Illinois","Virginia","Connecticut","Nebraska","West Virginia","Minnesota","Hawaii","Indiana","North Dakota","Pennsylvania","Iowa","South Carolina","Oklahoma","Wisconsin","Idaho","Ohio","Massachusetts","Missouri","Kentucky","Texas","South Dakota","Colorado","Kansas","Mississippi","Maine","Maryland","Oregon","Tennessee","Arizona","Rhode Island","Georgia","Florida","Delaware","North Carolina","California","New Mexico","Arkansas","New York","Nevada","Alaska","Vermont"];
+        const maleSalaries = [59853,68566,61269,74068,103222,55078,55496,75297,60293,52177,63819,66014,73022,56121,51981,64611,61812,55191,57121,62096,56427,52296,51289,57925,51941,57177,77636,54140,51842,56100,52405,65217,54902,47546,57009,71995,60831,51538,55458,63219,54422,51151,60608,52421,65324,51149,47329,67512,52398,62134,55803];
+		const femaleSalaries = [40976,51880,44707,57567,87244,40136,41725,61802,46914,39338,51131,53414,60672,44037,39897,52535,49816,43215,45182,50272,44801,40739,39781,46762,40803,46068,66536,43065,40991,45393,41792,54635,44368,37056,47018,62190,51057,41863,46309,54188,45405,42228,51827,44297,57373,43227,39526,59869,44906,55285,51931];
+
+        // Configuración del gráfico de salarios
+        const payment = {
+            x: maleSalaries,
+            y: femaleSalaries,
+            text: states,
+            mode: 'markers',
+            marker: { size: 4, color: "#888" }, // Tamaño y color de los puntos
+            hoverinfo: "none" // Deshabilitar hover predeterminado de Plotly
+        };
+
+        // Configuración del layout del gráfico
+        const layout = {
+            showlegend: false, // Ocultar leyenda
+            height: 600,
+            width: 600,  
+			autosize: false,
+			margin: { autoexpand: false, l: 80, r: 50, t:100, b: 50 },
+            xaxis: {
+                showline: true, showticklabels: true, ticks: 'outside',
+				tickcolor: 'rgb(82, 82, 82)', tickwidth: 1, ticklen: 5,
+				tickfont: {	family: 'Arial', size: 12, color: 'rgb(82, 82, 82)'	}, 
+				fixedrange: true, showgrid: false, range: [32000, 104000], tickprefix: '$', tickformat: ',' // Eje X
+            },
+            yaxis: {
+                showline: true, showticklabels: true, ticks: 'outside',
+				tickcolor: 'rgb(82, 82, 82)', tickwidth: 1, ticklen: 5,
+				tickfont: {	family: 'Arial', size: 12, color: 'rgb(82, 82, 82)'	}, 
+				fixedrange: true, showgrid: false, range: [32000, 99000], tickprefix: '$', tickformat: ',' // Eje Y
+            },
+            shapes: [
+                { type: 'line', x0: 0, y0: 0, x1: 105000, y1: 105000, line: { color: 'rgb(70, 70, 70)', width: 2 } } // Línea diagonal "Salario igual"
+            ],
+            annotations: [ // Anotaciones del gráfico
+                { x: 75000, y: 80000, text: '<b>Salario igual</b>', showarrow: false, textangle: -45, font: { size: 14 } },
+				{ xref: 'paper', yref: 'paper', x: -0.12, y: 1.2, text: 'Diferencia salarial de género en EE.UU.', font: { size: 25, color: 'rgb(100,100,100)' }, showarrow: false },
+				{ x: 95000, y: 48000, text: 'HOMBRE PAGADO MÁS', showarrow: false, font: { size: 16 } },
+				{ x: 60453, y: 40576, text: 'Wyoming: <i>menos</i> equitativo', xanchor: 'left', showarrow: true, ax: 20, ay: 20, font: { size: 14, color: 'rgb(100,100,100)' } },
+				{ x: 55603, y: 52600, text: 'Vermont: <i>más</i> equitativo', showarrow: true, ax: -50, ay: -80, font: { size: 14, color: 'rgb(100,100,100)' } },
+				{ x: 50000, y: 90000, text: 'MUJER PAGADA MÁS', showarrow: false, font: { size: 16 } },
+				{ xref: 'paper', yref: 'paper', x: -0.12, y: 1.05, xanchor: 'left', yanchor: 'top', text: '<b>Salario anual de la mujer</b>', font: { family: 'Arial', size: 14, color: 'rgb(10,10,10)' }, showarrow: false },
+				{ xref: 'paper', yref: 'paper', x: 0, y: -0.05, xanchor: 'left', yanchor: 'top', text: '<b>Salario anual del hombre</b>', font: { family: 'Arial', size: 14, color: 'rgb(10,10,10)' }, showarrow: false }
+			]
+		};
+
+        // Crear el gráfico
+        Plotly.newPlot('myDiv', [payment], layout, { scrollZoom: false, displayModeBar: false });
+
+        // Función para calcular la diferencia relativa en porcentaje
+        function relDiff(a, b) {
+            return 100 * Math.abs((a - b) / ((a + b) / 2));
+        }
+		
+		const stateElement = document.getElementById("state");
+		const womanElement = document.getElementById("woman");
+		const manElement = document.getElementById("man");
+		const diffElement = document.getElementById("diff");
+		const detailsElement = document.getElementById("details");
+
+        // Mostrar detalles al hacer hover sobre un punto del gráfico
+        document.getElementById('myDiv').on('plotly_hover', function(data) {
+            const index = data.points[0].pointIndex; // Obtener el índice del punto
+            const stateName = states[index]; // Nombre del estado
+            const maleIncome = maleSalaries[index]; // Salario masculino
+            const femaleIncome = femaleSalaries[index]; // Salario femenino
+
+            // Actualizar los detalles con la información correspondiente
+            stateElement.textContent = stateName;
+			womanElement.textContent = "$" + femaleIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			manElement.textContent = "$" + maleIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			diffElement.textContent = `${parseInt(relDiff(maleIncome, femaleIncome))}%`;
+			detailsElement.style.display = 'block';
+        });
+
+        // Ocultar detalles cuando se quita el hover
+        document.getElementById('myDiv').on('plotly_unhover', function() {
+            detailsElement.style.display = 'none'; // Ocultar el div de detalles
+        });
+    </script>
+</body>
+</html>
