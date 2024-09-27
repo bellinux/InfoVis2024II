@@ -1,0 +1,33 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+#boton-musica {
+    background-color: #4CAF50; /* Color de fondo */
+    color: white; /* Color del texto */
+    padding: 15px 32px; /* Espaciado interno del botón */
+    text-align: center; /* Centrar el texto */
+    font-size: 16px; /* Tamaño del texto */
+    border: none; /* Sin bordes */
+    border-radius: 12px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+    box-shadow: 0 4px #999; /* Sombra del botón */
+    transition: all 0.3s ease; /* Animación suave al pasar el ratón */
+  }
+  
+#boton-musica:hover {
+    background-color: #45a049; /* Cambia el color cuando pasas el ratón */
+    box-shadow: 0 6px #666; /* Cambia la sombra cuando pasas el ratón */
+    transform: translateY(-2px); /* Mueve el botón ligeramente hacia arriba */
+  }
+  
+#boton-musica:active {
+    background-color: #3e8e41; /* Color al hacer clic */
+    box-shadow: 0 4px #666; /* Sombra al hacer clic */
+    transform: translateY(2px); /* Mueve el botón hacia abajo al hacer clic */
+  }
+  
