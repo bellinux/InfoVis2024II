@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Por favor, contratar dos personas</title>
+  <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
+  <script src="http://unpkg.com/tone"></script>
+</head>
+<body>
+  <div style="width:1000px; height:400px" id='myDiv'></div>
+  <button id="playButton">Play Sequence</button>
+</body>
+
+
+<script>
+	
+	let month = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+	let processedNumber = [160, 184, 237, 148, 181, 150, 123, 156, 126, 104, 124, 140];
+	let receivedNumber = [160, 184, 241, 149, 180, 161, 132, 202, 160, 139, 149, 177];
+	let processedColor = [];
+	let receivedColor = [];
+	
+	processedNumber.forEach(function(){
+		processedColor.push("blue");
+		receivedColor.push("orange");
+	})
+
+	
+	// Datos de tickets procesados
+	let processed = {
+		x: month,
+		y: processedNumber,
+		type: 'bar',
+		name: 'Processed',
+		marker: {
+			color: processedColor,
+		},
+	};
+
+	// Datos de tickets recibidos
+	let received = {
+		x: month,
+		y: receivedNumber,
+		type: 'bar',
+		name: 'Received',
+		marker: {
+			color: receivedColor,
+		},
+	};
+
+	// Configuración del diseño del gráfico
+	let layout = {
+		title: 'Processed ticket over time',
+	};
+
+	
+	// Genera el gráfico, ejemplo en https://plotly.com/javascript/bar-charts/
+	Plotly.newPlot('myDiv', [received, processed], layout);
+	
+	// Calcula el valor máximo y mínimo entre los tickets procesados y recibidos
+	let maxValue = Math.max(...processedNumber, ...receivedNumber); // Valor máximo
+	let minValue = Math.min(...processedNumber, ...receivedNumber); // Valor mínimo
+
+	// Función para reproducir un tono
+	function playTone(frequency, type) {
+		const synth = new Tone.Synth({
+			oscillator: { type: type }, // Tipo de oscilador
+		}).toDestination();
+		synth.triggerAttackRelease(frequency, "0.5"); // Reproduce el tono por 0.5 segundos
+	}
+
+	// Función para mapear un valor (como la altura de la barra) a una nota MIDI
+	function mapValueToMIDI(value, inMin, inMax, outMin, outMax) {
+		let midiValue = (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+		return Math.round(midiValue); // Convierte a entero
+	}
+
+	// Listener para el clic en las barras
+	document.getElementById('myDiv').on('plotly_click', function(data){
+		// Datos del punto clicado
+		let pointIndex = data.points[0].pointIndex; // Índice del punto clicado
+		let traceName = data.points[0].data.name; // "Processed" o "Received"
+		let barValue = data.points[0].y; // Altura de la barra
+
+		// Mapeo del valor de la barra a un rango MIDI entre 45 (A2, es decir nota La2) y 81 (A5, nota La5)
+		let midiNote = mapValueToMIDI(barValue, minValue, maxValue, 45, 81);
+
+		if (traceName === "Processed") {
+			// Reproduce un sonido para Processed
+			playTone(Tone.Frequency(midiNote, "midi"), "sine");
+		} else if (traceName === "Received") {
+			// Reproduce un sonido para Received
+			playTone(Tone.Frequency(midiNote, "midi"), "triangle");
+		}
+	});
+
+
+
+
+
+
+	// Función para resaltar una barra
+	function highlightBar(traceIndex, barIndex, color) {
+		let update = {};
+		// Actualiza el color del marcador en la barra correspondiente
+		update['marker.color' + '[' + barIndex + ']'] = color;
+		Plotly.restyle('myDiv', update, traceIndex); // Actualiza el gráfico
+	}
+
+	// Función para restaurar el color original de la barra
+	function resetBarColor(traceIndex, barIndex, originalColor) {
+		let update = {};
+		// Restaura el color original del marcador en la barra correspondiente
+		update['marker.color' + '[' + barIndex + ']'] = originalColor;
+		Plotly.restyle('myDiv', update, traceIndex); // Actualiza el gráfico
+	}
+
+	// Función para reproducir la secuencia de Processed y Received
+	function playSequence() {
+		let noteDuration = 300; // Duración de cada sonido Processed o Received
+		let gapBetweenNotes = 100; // Pausa entre Received y Processed (en ms)
+		let gapBetweenMonths = 700; // Pausa entre los meses (en ms)
+
+		let currentTime = 0; // Tiempo inicial
+
+		for (let i = 0; i < month.length; i++) {
+			let processedValue = processedNumber[i]; // Valor procesado del mes actual
+			let receivedValue = receivedNumber[i]; // Valor recibido del mes actual
+
+			// Mapeo de los valores de las barras a notas MIDI
+			let processedMidi = mapValueToMIDI(processedValue, minValue, maxValue, 45, 81);
+			let receivedMidi = mapValueToMIDI(receivedValue, minValue, maxValue, 45, 81);
+
+			// Reproduce el sonido para Received y resalta la barra
+			setTimeout(() => {
+				highlightBar(0, i, 'gray'); // Resalta la barra Received (índice 0)
+				playTone(Tone.Frequency(receivedMidi, "midi"), "triangle"); // Reproduce el tono Received
+			}, currentTime);
+
+			// Restaura el color de la barra Received
+			setTimeout(() => {
+				resetBarColor(0, i, 'orange'); // Restaura el color original de la barra Received (índice 0)
+			}, currentTime + noteDuration);
+
+			// Reproduce el sonido para Processed después de Received
+			setTimeout(() => {
+				highlightBar(1, i, 'gray'); // Resalta la barra Processed (índice 1)
+				playTone(Tone.Frequency(processedMidi, "midi"), "sine"); // Reproduce el tono Processed
+			}, currentTime + noteDuration + gapBetweenNotes);
+
+			// Restaura el color de la barra Processed
+			setTimeout(() => {
+				resetBarColor(1, i, 'blue'); // Restaura el color original de la barra Processed (índice 1)
+			}, currentTime + (noteDuration * 2) + gapBetweenNotes);
+
+			// Actualiza el tiempo para el próximo mes
+			currentTime += (noteDuration * 2) + gapBetweenNotes + gapBetweenMonths;
+		}
+	}
+
+
+	// Listener para el botón de reproducción
+	document.getElementById('playButton').addEventListener('click', function() {
+		// Inicia la secuencia de sonido
+		playSequence();
+	});
+</script>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Por favor, contratar dos personas</title>
+  <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
+  <script src="http://unpkg.com/tone"></script>
+</head>
+<body>
+  <div id='myDiv'></div>
+  <button type="button" id="play">Cuentame en sonidos</button>
+</body>
+
+<style>
+    /* Ajusta la posición del texto en el gráfico de dispersión */
+    #myDiv > div > div > svg > g.cartesianlayer > g > g.overplot > g > g > g.trace.scatter:nth-child(1) > g.text {
+        transform: translateY(8px);
+    }
+    #myDiv > div > div > svg > g.cartesianlayer > g > g.overplot > g > g > g.trace.scatter:nth-child(2) > g.text {
+        transform: translateY(-5px);
+    }
+
+
+</style>
+
+<script>
+	// Definición de datos
+	var month = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+	var processedNumber = [160, 184, 237, 148, 181, 150, 123, 156, 126, 104, 124, 140];
+	var receivedNumber = [160, 184, 241, 149, 180, 161, 132, 202, 160, 139, 149, 177];
+	var processedTxt = [, , , , , , , 156, 126, 104, 124, 140]; // Solo algunos meses con texto
+	var receivedTxt = [, , , , , , , 202, 160, 139, 149, 177];
+
+	// Tamaño de marcador para resaltar meses específicos (ago-dic)
+	var noSize = 0; //ene-jul no se dibujan puntos
+	var yesSize = 10; //ago-dic se dibujan puntos de 10 pixeles
+	var sizeMarker = [noSize, noSize, noSize, noSize, noSize, noSize, noSize, yesSize, yesSize, yesSize, yesSize, yesSize];
+
+	// Datos de tickets procesados
+	var processed = {
+		x: month,
+		y: processedNumber,
+		text: processedTxt,
+		textposition: 'bottom',
+		textfont: { color: "#226699", },
+		mode: 'lines+markers+text',
+		marker: { size: sizeMarker,	opacity: 1, line: { width: 0 } },
+		line: {	color: "#226699", width: 4 }
+	};
+
+	// Datos de tickets recibidos
+	var received = {
+		x: month,
+		y: receivedNumber,
+		text: receivedTxt,
+		textposition: 'top',
+		textfont: {	color: "#999", },
+		mode: 'lines+markers+text',
+		marker: { size: sizeMarker,	opacity: 1, line: { width: 0 } },
+		line: { color: "#999", width: 4	}
+	};
+
+	// Configuración del diseño del gráfico
+	var layout = {
+		showlegend: false,
+		height: 450,
+		width: 600,
+		xaxis: {
+			showline: true,	showgrid: false, showticklabels: true,
+			linecolor: 'rgb(82, 82, 82)', linewidth: 1,	autotick: false,
+			tickfont: {	family: 'Arial', size: 12, color: 'rgb(82, 82, 82)'	}
+		},
+		yaxis: {
+			showgrid: false, zeroline: true, showline: true,
+			linewidth: 1, showticklabels: true,	linecolor: 'rgb(82, 82, 82)',
+			range: [1, 300], ticks: 'outside', tickcolor: 'rgb(82, 82, 82)',
+			tickwidth: 1, ticklen: 5, tickfont: {	family: 'Arial', size: 12, color: 'rgb(82, 82, 82)'	}
+		},
+		margin: { autoexpand: false, l: 70, r: 100,	t: 130 },
+		shapes: [
+			// Línea vertical en 'Mayo'
+			{ type: 'line', x0: "May", y0: 0, x1: "May", y1: 250, line: { color: 'rgb(200, 200, 200)', width: 1	} }
+		],
+		annotations: [{
+				xref: 'paper', yref: 'paper', x: -0.07,	y: 1.49, xanchor: 'left', yanchor: 'top',
+				text: '<b>Por favor, apruebe la contratación de 2 personas</b>',
+				showarrow: false, font: { family: 'Arial', size: 22, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: -0.07,	y: 1.38, xanchor: 'left', yanchor: 'top',
+				text: 'para reemplazar a los que renunciaron en el último año',
+				showarrow: false, font: { family: 'Arial', size: 15, color: 'rgb(150,150,150)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: -0.07,	y: 1.24, xanchor: 'left', yanchor: 'top',
+				text: 'Volumen de tickets a lo largo del tiempo',
+				showarrow: false, font: { family: 'Arial', size: 16, color: 'rgb(150,150,150)' }
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.2, y: 1.05, xanchor: 'left', yanchor: 'top',
+				text: '<b>2 empleados renunciaron en mayo.</b> Casi logramos mantenernos al día con',
+				showarrow: false, font: { family: 'Arial', size: 12, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.2, y: 0.99, xanchor: 'left', yanchor: 'top',
+				text: 'el volumen de entradas en los dos meses siguientes, pero nos retrasamos ',
+				showarrow: false, font: {	family: 'Arial', size: 12, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.2, y: 0.936, xanchor: 'left', yanchor: 'top',
+				text: 'con el aumento en agosto y no hemos podido recuperarnos desde entonces.',
+				showarrow: false, font: { family: 'Arial', size: 12, color: 'rgb(100,100,100)' },
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.96, y: 0.51,	xanchor: 'left', yanchor: 'top',
+				text: '<b>Procesados</b>', 
+				showarrow: false, font: { family: 'Arial', size: 14, color: '#226699' },				
+			}, {
+				xref: 'paper', yref: 'paper', x: 0.96, y: 0.64, xanchor: 'left', yanchor: 'top',
+				text: '<b>Recibidos</b>',
+				showarrow: false, font: { family: 'Arial', size: 14, color: '#999' },
+			}, {
+				xref: 'paper', yref: 'paper', x: -0.12, y: 1.03, textangle: -90, xanchor: 'left', yanchor: 'top',
+				text: 'Número de tickets',
+				showarrow: false, font: {	family: 'Arial', size: 13, color: 'rgb(100,100,100)' },
+			}
+		]
+	};
+
+	// Genera el gráfico
+	Plotly.newPlot('myDiv', [processed, received], layout, {
+		staticPlot: true
+	});
+	
+	// Calcula la diferencia porcentual entre los tickets procesados y recibidos - la musica se basa en esto y no sobre los valores absolutos
+	var percentageDifference = processedNumber.map(function(p, i) {
+		// Evitar división por 0
+		if (receivedNumber[i] === 0) {
+			return p === 0 ? 0 : 100; // Si ambos son 0, no hay diferencia. Si solo el recibido es 0, se asume 100% de diferencia.
+		}
+		// Cálculo de diferencia porcentual
+		return Math.abs((p - receivedNumber[i]) / receivedNumber[i]) * 100;
+	});
+
+	// Añade un evento de clic al botón "play"
+	document.getElementById("play").addEventListener("click", (event) => {
+		playElement = -1; // Inicializa el índice del elemento a -1
+
+		// Añadir una línea al gráfico mientras se ejecuta la música
+		layout.shapes[1] = { type: 'line', x0: "", y0: 0, x1: "", y1: 250, line: { color: 'red', width: 4 } };
+
+		// Ejecutar la música
+		executeMusic();
+	});
+
+	// Inicialización de la voz para síntesis de voz
+	const synthVoice = window.speechSynthesis;
+
+	// Frases para la síntesis de voz
+	const leavePersons = new SpeechSynthesisUtterance("Dos personas renunciaron en mayo.");
+	const noRecover = new SpeechSynthesisUtterance("No podemos recuperarnos desde entonces.");
+	leavePersons.lang = noRecover.lang = "es-es";
+
+	// Inicializa el sintetizador FM
+	const fms = new Tone.FMSynth().toDestination();
+	const doorClosing = new Audio("doorclosing.mp3"); // Carga el sonido del cierre de la puerta
+
+	// Función principal para ejecutar la música
+	function executeMusic() {
+		// Inicializa el retraso y el índice del elemento
+		let timeoutDelay = 1000; 
+		const totalElements = percentageDifference.length;
+
+		// Función para ejecutar una secuencia
+		const playSequence = (index) => {
+			if (index >= totalElements) {
+				handleFinalization(); // Maneja la finalización
+				return; // Sale de la función si se han procesado todos los elementos
+			}
+
+			// Actualiza la posición de la línea en el gráfico
+			layout.shapes[1].x0 = layout.shapes[1].x1 = month[index]; 
+			updateGraph(); // Actualiza el gráfico
+
+			const now = Tone.now(); // Obtiene el tiempo actual de Tone.js
+
+			// Configura la frecuencia del oscilador y lo hace sonar
+			fms.frequency.value = Tone.Frequency(65, "midi"); // Frecuencia inicial
+			//Sonido que baja gradualmente 
+			fms.frequency.rampTo(Tone.Frequency(65 - percentageDifference[index] / 2, "midi"), 0.3, now + 0.2);
+			fms.triggerAttackRelease(fms.frequency.value, 0.6); // Hace sonar el oscilador
+
+			// Manejo de eventos especiales para mayo
+			if (index === 4) {
+				timeoutDelay = 3000; // Aumenta el retraso
+				synthVoice.speak(leavePersons); // Habla la frase
+				doorClosing.currentTime = 0; // Reinicia el audio
+				doorClosing.play(); // Reproduce el sonido de la puerta
+				doorAfter(1200); // Reproduce el sonido de la puerta otra vez despues de 1200ms
+			} else {
+				// Reinicia el timeoutDelay a 1000 para los demás meses
+				timeoutDelay = 1000; 
+			}
+
+			// Llama a la siguiente secuencia después del retraso
+			setTimeout(() => {
+				playSequence(index + 1); // Llama recursivamente para continuar con la música
+			}, timeoutDelay);
+		};
+
+		// Inicia la secuencia
+		playSequence(0); // Comienza desde el primer elemento
+	}
+
+	// Función para manejar el cierre de la puerta
+	function doorAfter(time) {
+		setTimeout(() => {
+			doorClosing.currentTime = 0; // Reinicia el audio
+			doorClosing.play(); // Reproduce el sonido de la puerta
+		}, time);
+	}
+
+	// Función centralizada para manejar la finalización del proceso
+	function handleFinalization() {
+		setTimeout(() => {
+			synthVoice.speak(noRecover); // Habla la frase de no recuperación
+			layout.shapes[1] = null; // Elimina la línea del gráfico
+			updateGraph(); // Actualiza el gráfico
+
+			// Final dramático
+			setTimeout(() => {
+				fms.frequency.value = Tone.Frequency(65, "midi"); // Frecuencia inicial
+				fms.frequency.rampTo(Tone.Frequency(20, "midi"), 1.8); // Disminuye la frecuencia
+				fms.triggerAttackRelease(fms.frequency.value, 2); // Hace sonar el oscilador
+			}, 3000);
+		}, 900);
+	}
+
+	// Función para actualizar el gráfico de Plotly
+	function updateGraph() {
+		Plotly.update('myDiv', [processed, received], layout); // Actualiza el gráfico con los nuevos datos
+	}
+	
+	
+	
+</script>
+</html>
